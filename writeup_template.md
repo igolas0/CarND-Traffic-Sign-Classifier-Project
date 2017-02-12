@@ -1,9 +1,5 @@
 #**Traffic Sign Recognition** 
 
-##Writeup Template
-
-###You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
-
 ---
 
 **Build a Traffic Sign Recognition Project**
@@ -22,43 +18,58 @@ The goals / steps of this project are the following:
 [image1]: ./examples/visualization.jpg "Visualization"
 [image2]: ./examples/grayscale.jpg "Grayscaling"
 [image3]: ./examples/random_noise.jpg "Random Noise"
-[image4]: ./examples/placeholder.png "Traffic Sign 1"
-[image5]: ./examples/placeholder.png "Traffic Sign 2"
-[image6]: ./examples/placeholder.png "Traffic Sign 3"
+[image4]: ./examples/barchart.jpg "Visualization"
+[image5]: ./examples/100kmh.jpg "Traffic Sign 100km/h"
+[image6]: ./examples/nopass.jpg "Traffic Sign End of no passing"
 [image7]: ./examples/placeholder.png "Traffic Sign 4"
 [image8]: ./examples/placeholder.png "Traffic Sign 5"
+[image9]: ./examples/placeholder.png "Traffic Sign 5"
 
 ## Rubric Points
 ###Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/481/view) individually and describe how I addressed each point in my implementation.  
 
 ---
-###Writeup / README
-
-####1. Provide a Writeup / README that includes all the rubric points and how you addressed each one. You can submit your writeup as markdown or pdf. You can use this template as a guide for writing the report. The submission includes the project code.
-
-You are reading it! and here is a link to my [project code](https://github.com/udacity/CarND-Traffic-Sign-Classifier-Project/blob/master/Traffic_Sign_Classifier.ipynb)
+Here is a link to my [project code](https://github.com/udacity/CarND-Traffic-Sign-Classifier-Project/blob/master/Traffic_Sign_Classifier.ipynb)
 
 ###Data Set Summary & Exploration
 
-####1. Provide a basic summary of the data set and identify where in your code the summary was done. In the code, the analysis should be done using python, numpy and/or pandas methods rather than hardcoding results manually.
+####1. Basic summary of the data set:
 
 The code for this step is contained in the second code cell of the IPython notebook.  
 
-I used the pandas library to calculate summary statistics of the traffic
+I used numpy to calculate summary statistics of the traffic
 signs data set:
 
-* The size of training set is ?
-* The size of test set is ?
-* The shape of a traffic sign image is ?
-* The number of unique classes/labels in the data set is ?
+* The size of training set is 34799 (samples)
+* The size of test set is 12630 (samples)
+* The shape of a traffic sign image is 32x32x3  (height, width and RGB channels).
+* The number of unique classes/labels in the data set is 43 (as seen in the file signnames.csv).
 
-####2. Include an exploratory visualization of the dataset and identify where the code is in your code file.
+####2. Exploratory visualization of the dataset.
 
 The code for this step is contained in the third code cell of the IPython notebook.  
 
-Here is an exploratory visualization of the data set. It is a bar chart showing how the data ...
+Here is an exploratory visualization of the data set. It is a bar chart showing how much samples the training
 
-![alt text][image1]
+set contains per traffic sign (ID). We can see that for some traffic signs we find as few as around 200 
+
+training samples and for others as much as approx. 2000 training samples. My expectation is that the neural
+
+net will learn to recognize better the traffic signs with more training samples and viceversa. 
+
+![alt text][image4]
+
+I plotted two training samples images by random. One corresponded to a 100km/h speed limit sign (ID: 7)
+
+and the other one to an "End of no passing" sign (ID: 41). Since the image resolution is only 32x32x3
+
+it makes a really blurry impression because of the low res. My expectations is that the low res of the
+
+input images will be a hindrance for the max accuracy achievable by the neural net (see an example
+
+of a 100 km/h speed limit traffic sign in the plot below).
+
+![image5]
 
 ###Design and Test a Model Architecture
 
