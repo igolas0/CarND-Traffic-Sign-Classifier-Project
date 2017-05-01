@@ -28,7 +28,7 @@
 
 ---
 ### Overview
-In this project a convolutional neural network is trained to classify traffic signs. The model is trained and validated so it can classify traffic sign images using the [German Traffic Sign Dataset](http://benchmark.ini.rub.de/?section=gtsrb&subsection=dataset). After this step, the performance of the model is also tested on German traffic signs downloaded from the web.
+In this project a convolutional neural network is trained to classify traffic signs. The model is trained and validated so it can classify traffic sign images using the [German Traffic Sign Dataset](http://benchmark.ini.rub.de/?section=gtsrb&subsection=dataset). Then the performance of the model is also tested on (german) traffic signs downloaded from the web.
 
 ---
 ### The Project
@@ -40,16 +40,16 @@ The project is divided in the following steps:
 * Using the model to make predictions on new images (downloaded from the web)
 * Analyzing the softmax probabilities of the new images
 
-In the scope of this project I tried two different approaches and thus I include to different solutions:
+In the scope of this project I tried two different approaches and thus two different solutions are included:
 
 * Traffic_Sign_Classifier.ipynb (or .html) 
 * Traffic_Sign_Classifier_Transfer_Learning.ipynb (or .html) 
 
 My main solution is contained within the first iPython [Notebook](./Traffic_Sign_Classifier.html), where I started building upon a LeNet architecture and ended up using a modified AlexNet convolutional neural network architecture.
 
-Then I also tried a different approach, which you can find in this other [notebook](./Traffic_Sign_Classifier_Transfer_Learning.html). Mostly for learning purposes I wanted to test the concept of Transfer Learning via using a pre-trained network and re-training part of it on the dataset at hand. Here I ended up opting for ResNet50 (which is available in Keras with pre-trained weights on the [ImageNet dataset](http://www.image-net.org/)). 
+Then I also tried a different approach, which you can find in this other [notebook](./Traffic_Sign_Classifier_Transfer_Learning.html). Mostly for learning purposes I wanted to test the concept of Transfer Learning via using a pre-trained network and fine-tuning part of it on the dataset at hand. Here I ended up opting for the well-known ResNet50 architecture (which is available in Keras with pre-trained weights on the [ImageNet dataset](http://www.image-net.org/)). 
 
-Mainly due to simplicity and convinience I used Keras instead of Tensorflow for this project (Keras with Tensorflow as backend).
+Mainly due to simplicity and convenience I used Keras instead of Tensorflow for this project (Keras with Tensorflow as backend).
 
 ### Dataset and Repository
 
@@ -85,8 +85,6 @@ Here are some of the images of the dataset which correspond to some of the repre
 We can see that the pictures are taken from different angles, lighting conditions, etc. Some of the Traffic Signs are even partly covered by graffitis/painting. The full description of the 43 classes can be founded [here](./signnames.csv).
 
 
-####1. Describe how you preprocessed the image data. What techniques were chosen and why did you choose these techniques? Consider including images showing the output of each preprocessing technique. Pre-processing refers to techniques such as converting to grayscale, normalization, etc. (OPTIONAL: As described in the "Stand Out Suggestions" part of the rubric, if you generated additional data for training, describe why you decided to generate additional data, how you generated the data, and provide example images of the additional data. Then describe the characteristics of the augmented training set like number of images in the set, number of images for each class, etc.)
-
 #### 3. Data preprocessing.
 
 First all training, validation and test sets were shuffled with help of sklearn's library (cell no. 4). Then I also normalized the data to make the input features zero-centered and share the same value range (in this case the standard deviation of the images is computed and all features are divided by the standard deviation. This is important since the optimizer will later have an easier time if the data is zero-centered.  Normalizing the value range (in this case by the standard deviation) also speeds up the optimizing process because it prevents the input feature field of being skewed in some dimensions and also this way some features won't have predeterminately more relevance than others.
@@ -99,7 +97,7 @@ As a final preprocessing step we proceed to one-hot encode the labels, that is w
 
 #### 4. Data Augmentation using Keras generator built-in function.
 
-Data augmentation is very often a good idea, especially when we are working with a small dataset. If set up well it also has the potential of helping the neural net to generalize well on to different test-cases or real-life conditions that are not sampled by the data used to train on. It also helps by reducing the number of "foolish assumptions or hypothesis" which are valid for the training set but do not apply generally (overfitting). For example if all the training images for one class were taken on a sunny day, the neural net might learn to predict that class for all sunny (test) images, but having learned nothing about the particular features of that class.
+Data augmentation is very often a good idea, especially when we are working with a small dataset. If set up well it also has the potential of helping the neural net to generalize well on to different test-cases or real-life conditions that are not sampled by the data used to train on. It also helps by reducing the number of possible "foolish assumptions or hypothesis" which serve well for the training set but do not apply generally (overfitting). For example if all the training images for one class were taken on a sunny day, the neural net might learn to predict that class for all sunny (test) images, but it actually has learned nothing about the particular features of that class.
 
 Below you will find a snippet of the code describing the image data generator/augmentator:
 
@@ -145,17 +143,15 @@ As you can see in the table above the final architecture consists in three convo
 On top of these convolutions three fully connected layers with intertwined 50% probability dropout layers are used. The first two FC layers amount 2048 artificial neurons each and the final output layer contains 43 neurons (one per class).
 
 To come up with this architecture I took the well-known AlexNet as reference and modified it making it a bit "smaller" and less complex. The main difference is that my CNN only makes use of three convolutional layers (AlexNet uses five) and extracts less depth out of the convolutional layers. Then I also use half of the neurons in the fully connected layers compared to AlexNet. Reducing the complexity is reasonable since AlexNet is used to classify one thousand different classes on ImageNet and our dataset only contains 43 different classes. The resolution of the input images is lower in our case as well. 
-####3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
 
 To train the model, I used an Adam optimizer and a batch size of 256. The CNN was trained over 95 epochs on AWS. 
 
 This architecture achieved 96.1 % accuracy on the test set. I did not record the training and validation accuracies, but they must have been well over 97%. 
 
-####4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
 
 Steps which led me to the final model:
 
-I started out using the LeNet architecture (with minor changes) and no data augmentation. The LeNet model was quickly overfitting after a few epochs. Introducing some dropout layers did help to reduce the overfitting. The dropout layers "silences" by random a predetermined number of neurons in a layer. This forces the network to learn redundant hypothesis to classify the different classes which increases the robustness of the neural network predictions while reducing overfitting. The reason is this works is that overfitting happens most of the time when the neural network has a capacity of abstraction which is much higher than the complexity of the input data. So when trained on relative simple datasets (to the DNN) the neural network tends to catch on every detail even on features that do not help generalizing on to new datasets.
+I started out using the LeNet architecture (with minor changes) and no data augmentation. The LeNet model was quickly overfitting after a few epochs. Introducing some dropout layers did help to reduce the overfitting. The dropout layers "silence" by random a predetermined number of neurons in a layer. This forces the network to learn redundant hypothesis to classify the different classes which increases the robustness of the neural network predictions while reducing overfitting. The reason this works is that overfitting happens most of the time when the neural network has a capacity of abstraction which is much higher than the complexity of the input data. So when trained on relative simple datasets (relative to the DNN) the neural network tends to catch on every detail (even on features that do not help generalizing on to new datasets). Hence the training accuracy improves, but not validation and test accuracies.
 
 
  My best result with this combination was 95.8% accuracy on the validation set after only seven epochs, but training over more epochs did not help. The accuracy on the test set was close but lower than 95%.
@@ -174,7 +170,7 @@ Convolutional Neural Networks work well for computer vision problems since the s
 
 #### 6. Test a Model on New Images
 
-Here are five German traffic signs that I found on the web:
+Here are ten German traffic signs that I found on the web:
 
 ![alt text][image20] ![alt text][image11] ![alt text][image12] ![alt text][image13] ![alt text][image14] 
 ![alt text][image15] ![alt text][image16] ![alt text][image17] ![alt text][image18] ![alt text][image19] 
@@ -198,7 +194,6 @@ Here are the results of the predictions of the model on the downloaded web image
 
 The model was able to correctly classify 10 of the 10 downloaded traffic signs from the web. This result further validates the accuracy on the test set of 96.1%. 
 
-####3. Describe how certain the model is when predicting on each of the five new images by looking at the softmax probabilities for each prediction. Provide the top 5 softmax probabilities for each image along with the sign type of each probability. (OPTIONAL: as described in the "Stand Out Suggestions" part of the rubric, visualizations can also be provided such as bar charts)
 
 The code for printing out the top five predictions on the web images is located in the 15th cell of the Ipython notebook.
 
@@ -228,13 +223,13 @@ It seems that the first image was a rather ideal (painted) 80 km/h sign and this
 
 ![alt text][image20] ![alt text][image17]
 
-Still, the CNN was double so sure about its first guess than about the second one, so its prediction was fairly solid on the 8th image. As we can observe in the table above its next guesses were all speed limit signs.
+Still, the CNN was twice as sure about its first guess than about the second one, so its prediction was fairly solid on the 8th image. As we can observe in the table above its next guesses were all speed limit signs.
 
 The other two examples where our model did not show above 99.9% confidence were a 100 km/h (72.1% probability) and a 30 km/h speed limit sign (96.7% probability). It seems that speed limit signs are the most difficult to predict due to the similarity among them.
 
-### 10. Transfer Learning
+### 7. Transfer Learning
 
-On a second [iPython Notebook](./Traffic_Sign_Classifier_Transfer_Learning.ipynb) I try using Transfer Learning to solve this problem.
+On a second [iPython Notebook](./Traffic_Sign_Classifier_Transfer_Learning.ipynb) I use Transfer Learning to solve this problem.
 
 I started out experimenting with VGG19 and VGG16, but they were pretty memory intensive even for my GTX 1070 (I was using a generator to resize the images on the fly to 224x224).
 
@@ -244,7 +239,7 @@ Then I got to read this [blog post](http://www.topbots.com/14-design-patterns-im
 
 This chart helped be judging which architectures offer the best tradeoff between image classification accuracy and computation costs. That is when I decided to try ResNet-50, which offers higher accuracy than VGG for far less computation costs. Inception-v3 could have been a valid choice also.
 
-I made use of the pre-trained weights on ImageNet, which can be loaded directly using [Keras](https://keras.io/applications/#resnet50). Since this model accepts only 224x224 images (or 3 input channels with width and height no smaller than 197 as in the documentation) I decided to resize the images and save them to disk. This would speed up the training process, because it turned out that it was pretty slow having the generator to load and resize the images on the fly. (Note: I am not sure I used openCV's resize function, which might be more efficient than the ones I used).
+I made use of the pre-trained weights on ImageNet, which can be loaded directly using [Keras](https://keras.io/applications/#resnet50). Since this model accepts only 224x224 images (or 3 input channels with width and height no smaller than 197 as in the documentation) I decided to resize the images and save them to disk. This would speed up the training process, because it turned out that it was pretty slow having the generator to load and resize the images on the fly. (Note: I am not sure I used openCV's resizing function, which might be more efficient than the ones I used).
 
 The data augmentation method was the same as described above. In this case the Keras Image Generator had to flow the images from directory, as described in the documentation. For this I had to previously organize the pictures and put all pictures which belong to the same class in its own directory as described [here](https://gist.github.com/fchollet/0830affa1f7f19fd47b06d4cf89ed44d).
 
@@ -257,9 +252,9 @@ The image below offers a general idea of where the starting point should be and 
 
 The training happens in the sixth cell of the iPython Notebook. My final model loads the pre-trained weights and fine-tunes the conv3_x layers (see description and names of the layers in the ResNet paper) and all the layers on top of that. The weights of the preceding layers are kept fixed during training.
 
-The top of the original ResNet50 (originally average pooling, fc-1000 and softmax) is replaced by two fully connected layers of 4096 neurons each with relu activation functions and the output layer for the 43 classes and a softmax activation function.
+The top of the original ResNet50 (originally average pooling, fc-1000 and softmax) is replaced by two fully connected layers of 4096 neurons each with relu activation functions and by the output layer for the 43 classes plus a softmax activation function.
 
-I believe I got around 98% validation accuracy (I did not record the results, since my main motivation was learning) with this approach with like four epochs of training, as the model was quickly overfitting if trained over more epochs.  
+I believe I got around 98% validation accuracy (I did not record the results, since my main motivation was learning) with this approach after around four epochs of training, as the model was quickly overfitting if trained over more epochs.  
 
 To get the accuracy on the test set I would have to organize all test images into directories by class, which I am skipping for now because it was quite a tedious task and this is not my main solution for the project. I guess with the current model I could have achieved around 97% test accuracy and with some tweaking the results could probably be pushed even further.
 
