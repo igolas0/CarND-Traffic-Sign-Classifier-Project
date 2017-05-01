@@ -45,9 +45,9 @@ In the scope of this project I tried two different approaches and thus two diffe
 * Traffic_Sign_Classifier.ipynb (or .html) 
 * Traffic_Sign_Classifier_Transfer_Learning.ipynb (or .html) 
 
-My main solution is contained within the first iPython [Notebook](./Traffic_Sign_Classifier.html), where I started building upon a LeNet architecture and ended up using a modified AlexNet convolutional neural network architecture.
+My main solution is contained within the first iPython [Notebook](./Traffic_Sign_Classifier.ipynb), where I started building upon a LeNet architecture and ended up using a modified AlexNet convolutional neural network architecture.
 
-Then I also tried a different approach, which you can find in this other [notebook](./Traffic_Sign_Classifier_Transfer_Learning.html). Mostly for learning purposes I wanted to test the concept of Transfer Learning via using a pre-trained network and fine-tuning part of it on the dataset at hand. Here I ended up opting for the well-known ResNet50 architecture (which is available in Keras with pre-trained weights on the [ImageNet dataset](http://www.image-net.org/)). 
+Then I also tried a different approach, which you can find in this other [notebook](./Traffic_Sign_Classifier_Transfer_Learning.ipynb). Mostly for learning purposes I wanted to test the concept of Transfer Learning via using a pre-trained network and fine-tuning part of it on the dataset at hand. Here I ended up opting for the well-known ResNet50 architecture (which is available in Keras with pre-trained weights on the [ImageNet dataset](http://www.image-net.org/)). 
 
 Mainly due to simplicity and convenience I used Keras instead of Tensorflow for this project (Keras with Tensorflow as backend).
 
@@ -55,7 +55,6 @@ Mainly due to simplicity and convenience I used Keras instead of Tensorflow for 
 
  The dataset was downloaded from this [link](https://d17h27t6h515a5.cloudfront.net/topher/2017/February/5898cd6f_traffic-signs-data/traffic-signs-data.zip), from where a pickle file contains the dataset with already resized images (to 32x32). It contains a training, validation and test set.
 
-Here is a link to my [project code](https://github.com/igolas0/CarND-Traffic-Sign-Classifier-Project/blob/master/Traffic_Sign_Classifier.ipynb)
 
 #### 1. Data Set Summary & Exploration
 
@@ -144,14 +143,12 @@ On top of these convolutions three fully connected layers with intertwined 50% p
 
 To come up with this architecture I took the well-known AlexNet as reference and modified it making it a bit "smaller" and less complex. The main difference is that my CNN only makes use of three convolutional layers (AlexNet uses five) and extracts less depth out of the convolutional layers. Then I also use half of the neurons in the fully connected layers compared to AlexNet. Reducing the complexity is reasonable since AlexNet is used to classify one thousand different classes on ImageNet and our dataset only contains 43 different classes. The resolution of the input images is lower in our case as well. 
 
-To train the model, I used an Adam optimizer and a batch size of 256. The CNN was trained over 95 epochs on AWS. 
-
-This architecture achieved 96.1 % accuracy on the test set. I did not record the training and validation accuracies, but they must have been well over 97%. 
+To train the model, I used an Adam optimizer and a batch size of 256. The CNN was trained over 95 epochs on AWS. This architecture achieved 96.1 % accuracy on the test set. I did not record the training and validation accuracies, but they must have been well over 97%. 
 
 
-Steps which led me to the final model:
+The iterative process which led me to the final model is the following:
 
-I started out using the LeNet architecture (with minor changes) and no data augmentation. The LeNet model was quickly overfitting after a few epochs. Introducing some dropout layers did help to reduce the overfitting. The dropout layers "silence" by random a predetermined number of neurons in a layer. This forces the network to learn redundant hypothesis to classify the different classes which increases the robustness of the neural network predictions while reducing overfitting. The reason this works is that overfitting happens most of the time when the neural network has a capacity of abstraction which is much higher than the complexity of the input data. So when trained on relative simple datasets (relative to the DNN) the neural network tends to catch on every detail (even on features that do not help generalizing on to new datasets). Hence the training accuracy improves, but not validation and test accuracies.
+I started out using the LeNet architecture (with minor changes) and no data augmentation. The LeNet model was quickly overfitting after a few epochs. Introducing some dropout layers did help reduce the overfitting. The dropout layers "silence" by random a predetermined number of neurons in a layer. This forces the network to learn redundant hypothesis to classify the different classes which increases the robustness of the neural network predictions while reducing overfitting. The reason this works is that overfitting happens most of the time when the neural network has a capacity of abstraction which is much higher than the complexity of the input data. So when trained on relative simple datasets (relative to the DNN) the neural network tends to catch on every detail (even on features that do not help generalizing on to new datasets). Hence dropout works because it constraints the neural net to learn only helpful details it can rely on.
 
 
  My best result with this combination was 95.8% accuracy on the validation set after only seven epochs, but training over more epochs did not help. The accuracy on the test set was close but lower than 95%.
@@ -209,7 +206,7 @@ For the first image, the model is very confident that it is a 80 km/h speed limi
 
 Not only the CNN is pretty sure of its correct prediction, but its next guesses would have been similar speed limit signs, so we can be pretty happy with this one.
 
-On seven out of ten images the CNN was very confident (99.9%) about its actually correct predictions. The one were it was less confident about predicting was the 8th image, which was another 80 km/h speed limit sign. Here the CNN showed 55,5% confidence level. Here is the top 5 probability distribution for this image:
+On seven out of ten images the CNN was very confident (99.9%) about its actually correct predictions. The one where it was least confident about its prediction was the 8th image, which was another 80 km/h speed limit sign. Here the CNN showed 55,5% confidence level. Here is the top 5 probability distribution for this image:
 
 | Probability         	|     Prediction	        					| 
 |:---------------------:|:---------------------------------------------:| 
