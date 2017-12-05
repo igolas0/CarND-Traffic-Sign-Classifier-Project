@@ -102,7 +102,7 @@ Below you will find a snippet of the code describing the image data generator/au
 
 ![alt text][image3]
 
-Random rotations, color channel shifts, random zooms, horizontal and vertical shifts were introduced. I limited the angle of the rotations and did not use vertical flips since that could cause some overlap between some classes, hence confusing the CNN. Somehow I could not get the ImageDataGenerator to run with the zca_whitening option turned on, which I actually wanted to use and I think would have been profitable. 
+Random rotations, color channel shifts, random zooms, horizontal and vertical shifts were introduced. I limited the angle of the rotations and did not use vertical flips since that could cause some overlap between some classes, hence confusing the CNN. 
 
 Here are some examples of augmented images:
 
@@ -157,11 +157,11 @@ I also experimented using leaky relu with different alpha value as an activation
 
 After this I decided that I needed data augmentation to be able to train over more epochs and a bit more complex network to handle a bit higher level of abstraction. This is where I tried different variations of AlexNet and came up with my final model.
 
-The data augmentation did a goob job to reduce overfitting and the CNN was able to continue learning (improving accuracy without overfitting) even after hundred epochs. I am pretty sure I got around 97% accuracy on the test set after 300 epochs on an unrecorded run trained on my GTX 1070 graphic card and there were still no signs of overfitting. This means there is a good possibility that accuracy could have been improved further by just training for more epochs (while the learning curve was getting steeper and steeper after 100 epochs). 
+The data augmentation did a goob job to reduce overfitting and the CNN was able to continue learning (improving accuracy without overfitting) even after hundred epochs. I got around 97% accuracy on the test set after 300 epochs on an unrecorded run trained on my GTX 1070 graphic card and there were still no signs of overfitting. This means there is a good possibility that accuracy could have been improved further by just training for more epochs (while the learning curve was getting steeper and steeper after 100 epochs). 
 
 Things to try in further work would be other kinds of data augmentation (e.g. zca whitening) and balancing the dataset across the different classes. It seems that the balancing of the classes via data augmentation by itself can improve accuracy by one or several points (percent).
 
-Convolutional Neural Networks work well for computer vision problems since the shared weights help to learn aspect of objects which are independent of the position where they appear in the image. An aspect that still is to be improved is introducing rotation independence to CNN's. This might be the reason why this other student has come up with 99.6% test accuracy using CNN and [Spatial Transformation](https://github.com/hello2all/GTSRB_Keras_STN). His approach looks very promising and it is something I sure want to play with in the future.
+Convolutional Neural Networks work well for computer vision problems since the shared weights help to learn aspect of objects which are independent of the position where they appear in the image. An aspect that still is to be improved is introducing rotation independence to CNN's. This approach is the one to achieve state-of-the-art accuracy (>99% test accuracy) using CNN and [Spatial Transformation](https://papers.nips.cc/paper/5854-spatial-transformer-networks.pdf). The methods used in the paper look very promising and it is something I sure want to play with in the future.
  
 
 
@@ -251,7 +251,7 @@ The training happens in the sixth cell of the iPython Notebook. My final model l
 
 The top of the original ResNet50 (originally average pooling, fc-1000 and softmax) is replaced by two fully connected layers of 4096 neurons each with relu activation functions and by the output layer for the 43 classes plus a softmax activation function.
 
-I believe I got around 98% validation accuracy (I did not record the results, since my main motivation was learning) with this approach after around four epochs of training, as the model was quickly overfitting if trained over more epochs.  
+I got around 98% validation accuracy with this approach after around four epochs of training, as the model was quickly overfitting if trained over more epochs.  
 
 To get the accuracy on the test set I would have to organize all test images into directories by class, which I am skipping for now because it was quite a tedious task and this is not my main solution for the project. I guess with the current model I could have achieved around 97% test accuracy and with some tweaking the results could probably be pushed even further.
 
